@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>Ajax7</title>
+  	<meta charset="utf-8">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script >
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              var pintar = JSON.parse(this.responseText);
+              var region1 = document.getElementById("region1").value;
+              var region2 = document.getElementById("region2").value;
+              myArray = [];
+              var posReg1=0;
+              var posReg2=0;
+              for(i in pintar){
+                  var name = pintar[i].region;
+                  if(name == region1){
+                      posReg1 = i;
+                  }
+                  if(name == region2){
+                      posReg2 = i;
+                  }
+               }
+              var total = pintar[0].confirmed.length;
+              var casosReg1 =pintar[posReg1].confirmed;
+              var casosReg2 = pintar[posReg2].confirmed;
+              for(var j=0;j<total;j++){
+                  var fecha = casosReg1[j].date;
+            	  var casosR1 = parseInt(casosReg1[j].value);
+            	  var casosR2 = parseInt(casosReg2[j].value);
+            	  myArray[j] = [fecha,casosR1,casosR2];
+              }
+
+              var data = new google.visualization.DataTable();
+              data.addColumn('string', 'fecha');
+              data.addColumn('number', region1);
+              data.addColumn('number', region2);
+              data.addRows(myArray);
+              
+              var options = {'title': 'Gráfico Comparativo entre 2 regiones',
+                       'width':800,
+                       'height':400};
+              var chart = new google.visualization.LineChart(document.getElementById('grafica'));
+            chart.draw(data, options);
+          }
+        }
+        xhttp.open("GET", "data.json", true);
+        xhttp.send();
+      }
+    </script>
+ </head>
+ <body >
+ 	<h1>INGRESANDO REGIONES</h1>
+    <label for="region1"> Region 1:</label>
+ 	<input type="text" id="region1" placeholder="Ingrese Region">
+     <label for="region2"> Region 2:</label>
+    <input type="text" id="region2" placeholder="Ingrese Region">
+    <br><br> 
+ 	<button onclick="drawChart()">Crear Grafica</button>
+    <br><br>
+    <div  id="grafica"></div>
+ </body>
+</html>

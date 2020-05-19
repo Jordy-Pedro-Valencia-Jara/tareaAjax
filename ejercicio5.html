@@ -1,0 +1,54 @@
+<html>
+  <head>
+  	<title>Ajax5</title>
+      <meta charset="utf-8">
+    <script  src="https://www.gstatic.com/charts/loader.js"></script>
+    <script >
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var graficar= JSON.parse(this.responseText);
+            myArray = [];          
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'fecha');
+
+            var cont = 0;
+            var confirmados = graficar[0].confirmed;
+            for(var i in graficar[0].confirmed){
+              var element=[];
+              var fecha = confirmados[i].date;
+              element[element.length] = fecha;
+              for(var j in graficar){
+                confirmados = graficar[j].confirmed;
+                var casosRegi = parseInt(confirmados[cont].value);
+                element[element.length] = casosRegi;                
+              }
+              cont++;
+              myArray[myArray.length] = element;
+            }
+            for(var k in graficar){
+              var region = graficar[k].region;
+              data.addColumn('number', region);
+            }
+            data.addRows(myArray);
+
+            var options = {'title': '\tGráfico Comparativo entre todas las Regiones',
+                       'width':800,
+                       'height':800};
+            var chart = new google.visualization.LineChart(document.getElementById('grafico'));
+            chart.draw(data, options);
+          }
+        }
+        xhttp.open("GET", "data.json", true);
+        xhttp.send();
+      }
+    </script>
+ </head>
+ <body >
+ 	<h2 >REGIONES COVID-COMPARACION ENTRE TODAS LAS REGIONES</h2>
+  <div  id="grafico"></div>
+ </body>
+</html>

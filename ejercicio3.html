@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>Ajax3</title>
+</head>
+<body>
+	<h1>Ejercicio3</h1>
+	<div id="demo">	
+	<button type="button" onclick="loadDoc()">top 10 </button>
+	</div>
+	<script>
+		function loadDoc(){
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function(){
+				if(this.readyState == 4 && this.status == 200 ){
+					var myObj = JSON.parse(this.responseText);
+					var html ="<style>table,th,td{border: 1px solid black;}</style>";
+					html+= "<table style='width:50%'>\n";
+					html+= "<tr><td>PUESTO</td><td>REGIONES</td><td>POSITIVOS</td>\n</tr>\n";
+					var tenFisrts = [];
+					for(i in myObj){
+						var name = myObj[i].region;
+						var last = myObj[i].confirmed[myObj[i].confirmed.length-1].value;
+						var newObj = {name: name,value: Number(last)}; 
+						tenFisrts.push(newObj);
+					};
+					tenFisrts.sort(function(a,b){
+						return b.value - a.value
+					});
+					for(var i=0;i<10;i++){
+						region = tenFisrts[i].name;
+						confirmados = tenFisrts[i].value;
+						html+= "<tr>\n<th>\n";
+						html+= (i+1) +'</th>\n<th>'+region+'</th>\n<th>'+confirmados+'</th></tr>';	
+					}
+					html+= '</table>\n';
+					document.getElementById("demo").innerHTML=html;	
+				}			
+			};
+			xhttp.open("GET","data.json",true);
+			xhttp.send();
+		}
+	</script>	
+</body>
+</html>

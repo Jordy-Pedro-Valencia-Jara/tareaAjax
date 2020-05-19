@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Ajax1</title>
+</head>
+<body>
+    <h1>Ejercicio1</h1>
+    <div id="demo">
+        <button type="button" onclick="loadDoc()">Leer archivo</button>
+    </div>
+    <script>
+        function loadDoc(){
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(this.readyState==4 && this.status==200){
+                    var data = JSON.parse(this.responseText);
+                    var html = "<style>table,th,td{border: 1px solid black;}</style>" ;
+                    html += "<table style ='width:50%'>\n";
+                    html +="<tr><td>REGION</td></tr>";
+                    for(i=0; i < data.length ;i++){
+                        html+= "<tr>\n";
+                        var name = data[i]["region"];
+                        html+= '<th>'+name+'</th></tr>';     
+                    }
+                    html+= '</table>\n';
+                    document.getElementById("demo").innerHTML=html;    
+                }
+            };
+            xhttp.open("GET","data.json",true);
+            xhttp.send();
+        }
+    </script>
+</body>
+</html>

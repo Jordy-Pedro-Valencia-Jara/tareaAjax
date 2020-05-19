@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ajax2</title>
+</head>
+<body>
+	<h1>Ejercicio2</h1>
+	<div id="demo">
+		<button type="button" onclick="loadDoc()">Leer Archivos</button>	
+	</div>
+	<script>
+		function loadDoc(){
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function(){
+				if(this.readyState == 4 && this.status ==200){
+					var data = JSON.parse(this.responseText);
+					var html = "<style>table,th,td{border: 1px solid black;}</style>" ;
+					html += "<table style ='width:50%'>\n";
+					html +="<tr><th>REGION</th><th>Casos Positivos</th></tr>";
+					for(i=0;i<data.length;i++){
+						html+= "<tr>\n<th>\n";
+						region = data[i].region;
+						confirmados = data[i].confirmed[data[i].confirmed.length-1].value;
+						html+= region+'</th>\n<th>'+confirmados+'</th>\n</tr>\n';
+					}
+					html += '</table>\n';
+					document.getElementById("demo").innerHTML =html;
+				}
+			};
+			xhttp.open("GET","data.json",true);
+			xhttp.send();
+		}
+	</script>
+</body>
+</html>
